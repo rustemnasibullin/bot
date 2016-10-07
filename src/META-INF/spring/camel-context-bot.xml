@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- START SNIPPET: e1 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <import resource="classpath:META-INF/beans.xml"/>
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+    <template id="XProducer" defaultEndpoint="activemq:queue:resize"/>
+    </camelContext>
+    
+
+    <bean id="BotConfigurator" class="net.dtracktor.bot.components.BotConfigurator" scope="singleton">
+    </bean>
+
+    <bean id="FileScheduller" class="net.dtracktor.bot.components.FileScheduller" scope="singleton">
+          <property name="configurator" ref="BotConfigurator"/>
+          <property name="producer" ref="XProducer"/>
+    </bean>
+
+    <bean id="FileRetry" class="net.dtracktor.bot.components.FileRetry" scope="singleton">
+          <property name="configurator" ref="BotConfigurator"/>
+    </bean>
+
+    <bean id="FileResizer" class="net.dtracktor.bot.components.FileResizer" scope="singleton">
+          <property name="configurator" ref="BotConfigurator"/>
+    </bean>
+
+    <bean id="FileBrowser" class="net.dtracktor.bot.components.FileBrowser" scope="singleton">
+          <property name="configurator" ref="BotConfigurator"/>
+    </bean>
+
+    <bean id="FileUploader" class="net.dtracktor.bot.components.FileUploader"  scope="singleton">
+          <property name="configurator" ref="BotConfigurator"/>
+    </bean>
+
+
+ <camelContext id="schedule" xmlns="http://camel.apache.org/schema/spring"  threadNamePattern="z9991-#counter#"  autoStartup="false">
+
+
+    <threadPoolProfile id="xThreadPoolProfile" defaultProfile="true"
+                         poolSize="2" maxPoolSize="300" maxQueueSize="100000000"
+                         rejectedPolicy="CallerRuns"/>
+   
+   
+ 
+    
+     <route id="schedule">
+           <from uri="timer://foo?delay=0&amp;period=0"/>
+           <to uri="bean:FileScheduller?method=process"/>
+      </route>
+      
+    </camelContext>
+      
+ 
+   
+ 
+ <camelContext id="resize" xmlns="http://camel.apache.org/schema/spring"  threadNamePattern="z9991-#counter#"  autoStartup="false">
+
+
+     <threadPoolProfile id="xThreadPoolProfile" defaultProfile="true"
+                         poolSize="2" maxPoolSize="300" maxQueueSize="100000000"
+                         rejectedPolicy="CallerRuns"/>
+   
+   
+     <route id="resize" >
+           <from uri="activemq:queue:resize?transacted=true"/>
+           <to uri="bean:FileResizer?method=process"/>
+ 
+           <filter>
+           <simple>${header.exitcode} == 0</simple> 
+           <to uri="activemq:queue:upload"/>
+           </filter>
+
+           <filter>
+           <simple>${header.exitcode} == 1</simple> 
+           <to uri="activemq:queue:failed"/>
+           </filter>
+
+           
+     </route>
+
+    </camelContext>
+
+ <camelContext id="upload" xmlns="http://camel.apache.org/schema/spring"  threadNamePattern="z9991-#counter#"  autoStartup="false">
+
+
+    <threadPoolProfile id="xThreadPoolProfile" defaultProfile="true"
+                         poolSize="2" maxPoolSize="300" maxQueueSize="100000000"
+                         rejectedPolicy="CallerRuns"/>
+   
+   
+ 
+
+     <route id="upload">
+           <from uri="activemq:queue:upload?transacted=true"/>
+           <to uri="bean:FileUploader?method=process"/>
+           <filter>
+           <simple>${header.exitcode} == 0</simple> 
+           <to uri="activemq:queue:done"/>
+           </filter>
+
+           <filter>
+           <simple>${header.exitcode} == 1</simple> 
+           <to uri="activemq:queue:failed"/>
+           </filter>
+           
+     </route>
+
+    </camelContext>
+
+ <camelContext id="retry" xmlns="http://camel.apache.org/schema/spring"  threadNamePattern="z9991-#counter#"  autoStartup="false">
+
+
+    <threadPoolProfile id="xThreadPoolProfile" defaultProfile="true"
+                         poolSize="2" maxPoolSize="300" maxQueueSize="100000000"
+                         rejectedPolicy="CallerRuns"/>
+   
+   
+ 
+
+    <route id="retry">
+           <from uri="activemq:queue:failed"/>
+           <to uri="bean:FileRetry?method=process"/>
+ 
+           <filter>
+           <simple>${header.exitcode} == 0</simple> 
+           <to uri="activemq:queue:resize"/>
+           </filter>
+
+           <filter>
+           <simple>${header.exitcode} == 2</simple> 
+           <to uri="activemq:queue:failed"/>
+           </filter>
+
+    </route>
+
+  </camelContext>
+
+
+
+  
+</beans>
+<!-- END SNIPPET: e1 -->
