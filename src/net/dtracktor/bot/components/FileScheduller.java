@@ -11,6 +11,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 
+/**
+ * 
+ *   File schedule Command    
+ *   @author rustemnasibullin@yahoo.com
+ */
 public class FileScheduller  implements Processor {
  
     BotConfigurator configurator;

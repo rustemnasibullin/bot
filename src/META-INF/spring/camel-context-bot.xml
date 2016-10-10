@@ -31,10 +31,6 @@
           <property name="configurator" ref="BotConfigurator"/>
     </bean>
 
-    <bean id="FileBrowser" class="net.dtracktor.bot.components.FileBrowser" scope="singleton">
-          <property name="configurator" ref="BotConfigurator"/>
-    </bean>
-
     <bean id="FileUploader" class="net.dtracktor.bot.components.FileUploader"  scope="singleton">
           <property name="configurator" ref="BotConfigurator"/>
     </bean>

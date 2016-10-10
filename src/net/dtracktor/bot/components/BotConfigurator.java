@@ -10,6 +10,11 @@ import java.util.Properties;
 
 import net.dtracktor.bot.Start;
 
+/**
+ *   Bot configuration through Property file 
+ * 
+ *   @author rustemnasibullin@yahoo.com
+ */
 public class BotConfigurator extends Properties {
 
     public BotConfigurator() {

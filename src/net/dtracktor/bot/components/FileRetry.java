@@ -7,7 +7,8 @@ import org.apache.camel.Processor;
 
 /**
  * 
- * 
+ *   File processing retry analysis    
+ *   @author rustemnasibullin@yahoo.com
  */
 public class FileRetry implements Processor {
     public FileRetry() {

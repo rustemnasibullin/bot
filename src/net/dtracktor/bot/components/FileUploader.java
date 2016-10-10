@@ -6,6 +6,11 @@ import net.dtracktor.bot.Start;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
+/**
+ * 
+ *   File Upload command    
+ *   @author rustemnasibullin@yahoo.com
+ */
 public class FileUploader implements Processor {
 
     BotConfigurator configurator;

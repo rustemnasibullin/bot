@@ -1,6 +1,10 @@
 package net.dtracktor.bot;
 
-
+/**
+ * 
+ *   Google DRIVE API Helper class    
+ *   @author rustemnasibullin@yahoo.com
+ */
 import java.io.FileInputStream;
 
 import net.dtracktor.bot.utils.ApacheHttpClientPost;

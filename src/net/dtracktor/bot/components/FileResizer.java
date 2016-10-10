@@ -16,6 +16,11 @@ import net.dtracktor.bot.Start;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+/**
+ *   Image File resizer according with rules
+ *    
+ *   @author rustemnasibullin@yahoo.com
+ */
 
 public class FileResizer implements Processor {
     
@@ -24,30 +29,6 @@ public class FileResizer implements Processor {
             private static final int IMG_WIDTH  = 640;
             private static final int IMG_HEIGHT = 640;
 
-            public static void main(String [] args){
-
-            try {
-
-                    BufferedImage originalImage = ImageIO.read(new File("./images/chesstop.jpg"));
-                    int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-
-                    BufferedImage resizeImageJpg = resizeImage(originalImage, type);
-                    ImageIO.write(resizeImageJpg, "jpg", new File("./images/chesstop1.jpg"));
-
-                    BufferedImage resizeImagePng = resizeImage(originalImage, type);
-                    ImageIO.write(resizeImagePng, "png", new File("./images/chesstop2.png"));
-
-                    BufferedImage resizeImageHintJpg = resizeImageWithHint(originalImage, type);
-                    ImageIO.write(resizeImageHintJpg, "jpg", new File("./images/chesstop1h.jpg"));
-
-                    BufferedImage resizeImageHintPng = resizeImageWithHint(originalImage, type);
-                    ImageIO.write(resizeImageHintPng, "png", new File("./images/chesstop2h.png"));
-
-            } catch(IOException e){
-                    System.out.println(e.getMessage());
-            }
-
-        }
 
         private static BufferedImage resizeImage(BufferedImage originalImage, int type){
             BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);

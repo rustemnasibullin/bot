@@ -14,10 +14,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 
-/**
- * 
- * 
- */
+ /**
+  * 
+  *   Http POST Client Method    
+  *   @author rustemnasibullin@yahoo.com
+  */
 
 public class ApacheHttpClientPost implements IHTTPClient {
 
